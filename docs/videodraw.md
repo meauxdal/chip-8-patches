@@ -18,9 +18,9 @@ unreachable capture residue at `0250-0259`. They mask V1 to 0-63 and V2 to 0-31,
 then return to `020A`, making wrapping and clipping interpreters agree. VB is
 scratch; any logic-op effect on VF is overwritten by the following draw.
 
-## Evidence
+## Controls
 
-The validator checks the guarded local payload, reproduction, reachable control
-flow, drawing, erasing, four directions, four edge crossings, 56 quirk/profile
-scenarios, and the current OpenStudio2 firmware path. Controls are 0 erase, 5 draw,
-and 2/4/6/8 move up/left/right/down.
+- 5 draw
+- 0 erase 
+- 2/4/6/8 move up/left/right/down. 
+- two non-opposites of the above keys for diagonal movement

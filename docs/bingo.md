@@ -22,12 +22,3 @@ Every `Fx55`/`Fx65` use reloads `I` when its post-increment value could matter.
 Ambiguous shifts are replaced by addition, coordinates remain in bounds, and the
 CPU-speed delay loop is replaced by the delay timer. The fixed reachable program
 contains no native `0NNN`, ambiguous shift, `Bnnn`, or `Fx0A` instruction.
-
-## Evidence
-
-The validator checks guarded reproduction, reachable control flow, and three
-manual-call display sequences under VIP, CHIP-48-like, and mixed quirk profiles.
-It also completes a manual call through the current OpenStudio2 firmware model.
-An earlier intermediate was played successfully on physical OpenStudio2; the
-final image adds the indexed store at `0310`/`0684` and was not separately recorded
-on hardware.

@@ -15,11 +15,3 @@ The patch changes `0252: 6D3B` to `6D3C`, waiting for 60 timer ticks, and change
 `0266: 02D8` to `1252`, bypassing the machine-code delay and starting the next
 interval. The native bytes remain as unreachable archival data. The seven `Fx0A`
 instructions are unchanged; press/release handling belongs to the interpreter.
-
-## Evidence
-
-The validator checks the local guarded original, exact reproduction, reachable
-control flow, the native timing derivation, minute carry, midnight
-rollover, divergent draw profiles, and time entry through the first increment in
-the current OpenStudio2 firmware model. The timing fix was also reported working
-on physical OpenStudio2 hardware.

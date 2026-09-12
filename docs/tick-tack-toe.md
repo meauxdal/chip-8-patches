@@ -15,11 +15,3 @@ routine appended at `03D6-03E9`. The routine stores two zero bytes per pass,
 reloads `I` so `Fx55` post-increment behavior is irrelevant, then jumps to the
 original continuation at `0202`. A jump is used because the native service did
 not consume a CHIP-8 stack entry.
-
-## Evidence
-
-The validator checks the guarded local original, all sixteen cleared bytes, reachable
-control flow, a complete deterministic game under three quirk profiles, and boot
-to the first key wait in the current OpenStudio2 firmware model. Physical
-OpenStudio2 playability was reported on 2026-09-11. Controls are keypad 1-9; the
-player moves first as O and the computer plays X.
