@@ -14,13 +14,11 @@ replaced byte, and writes the portable image without modifying the original.
 | Videodraw | `videodraw/` | [docs/videodraw.md](docs/videodraw.md) |
 | Wipe Off | `wipe-off/` | [docs/wipe-off.md](docs/wipe-off.md) |
 
-The abandoned Pinball investigation is summarized in
-[docs/pinball.md](docs/pinball.md); no patch or fixed image was produced.
+Pinball is a VIP-exclusive CHIP-8 title, but fixing it is beyond the
+scope of this project. See [docs/pinball.md](docs/pinball.md).
 
-Each title directory contains the canonical original copied from the RCA Studio II
-full set, the fixed image, and the scripts needed to reproduce and validate it.
-Input filenames are not significant; alternate input paths may still be passed
-on the command line.
+Each title directory contains the original, the fixed image, and the scripts 
+needed to reproduce and validate it.
 
 Rebuild and check a title from the repository root:
 
