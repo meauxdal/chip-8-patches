@@ -8,16 +8,24 @@ import hashlib
 from pathlib import Path
 
 
-DEFAULT_INPUT = Path(__file__).with_name(
-    "Videodraw Chip 8 [AUD_2464_09_B41_ID19_01] - extracted.ch8"
-)
 DEFAULT_OUTPUT = Path(__file__).with_name(
-    "Videodraw Chip 8 [AUD_2464_09_B41_ID19_01] (portable fix).ch8"
+    "Videodraw (portable fix) [AUD_2464_09_B41_ID19_01].ch8"
 )
 
 ORIGINAL_LENGTH = 256
 ORIGINAL_SHA256 = "c3d5e465fdba6c275ab02fbef114fa4f69f9cac26edddc10d05326e195d8a9be"
 FIXED_SHA256 = "2e2f85723f85786b668f37e7989b743f4f7f75dae89e098b714c9f8ba51ba1be"
+ORIGINAL_SHA1 = "87939f2c59bf27d30fdc53dc53161b6c9ef8085c"
+
+
+def find_input() -> Path:
+    for path in Path(__file__).parent.glob("*.ch8"):
+        if hashlib.sha1(path.read_bytes()).hexdigest() == ORIGINAL_SHA1:
+            return path
+    raise FileNotFoundError(f"no input ROM with database SHA-1 {ORIGINAL_SHA1}")
+
+
+DEFAULT_INPUT = find_input()
 
 
 def words(*values: int) -> bytes:

@@ -8,9 +8,19 @@ import hashlib
 from pathlib import Path
 
 
-DEFAULT_INPUT = Path(__file__).with_name("Bingo [TCNJ S.572.2, 3, 197x].ch8")
-DEFAULT_OUTPUT = Path(__file__).with_name("Bingo [TCNJ S.572.2, 3] (portable fix).ch8")
+DEFAULT_OUTPUT = Path(__file__).with_name("Bingo (portable fix) [TCNJ S.572.2, 3, 197x].ch8")
 ORIGINAL_SHA256 = "702676f43590720f95e5fc3c334a00a58478b0fca5c082f25c772f54abcaa65a"
+ORIGINAL_SHA1 = "08f70fe1c228d15a7a5f456840b5e0e56a51fd99"
+
+
+def find_input() -> Path:
+    for path in Path(__file__).parent.glob("*.ch8"):
+        if hashlib.sha1(path.read_bytes()).hexdigest() == ORIGINAL_SHA1:
+            return path
+    raise FileNotFoundError(f"no input ROM with database SHA-1 {ORIGINAL_SHA1}")
+
+
+DEFAULT_INPUT = find_input()
 
 
 def words(*values: int) -> bytes:

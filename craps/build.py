@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the portable CHIP-8 fix for Bill Fisher's Clock Program."""
+"""Build the self-contained CHIP-8 fix for Carmelo Cortez's Craps."""
 
 from __future__ import annotations
 
@@ -8,12 +8,12 @@ import hashlib
 from pathlib import Path
 
 
-DEFAULT_OUTPUT = Path(__file__).with_name("Clock Program (portable fix) [Bill Fisher, 1981].ch8")
+DEFAULT_OUTPUT = Path(__file__).with_name("Craps (portable fix) [Carmelo Cortez, 1978].ch8")
 
-ORIGINAL_LENGTH = 280
-ORIGINAL_SHA256 = "f6773f7385982165d693febc7e26826dead4a66cd2376f603a66fcb775ca1a34"
-FIXED_SHA256 = "bf2d6d3bdcaefa4997ac81d40790adccb58be5c264b917b8f6a3c355123d98a7"
-ORIGINAL_SHA1 = "016345d75eef34448840845a9590d41e6bfdf46a"
+ORIGINAL_LENGTH = 0xC0
+ORIGINAL_SHA256 = "d482fcc8536bbcf20045063c404df1a005a688c8c814bd22db5c6f11277edd03"
+FIXED_SHA256 = "2dee82081ef51e77187ff83d931288f2ec3c732b382f7c43ed068b4809ae735a"
+ORIGINAL_SHA1 = "35158696bd94ea22ef34e899fff1f15f7154d4fd"
 
 
 def find_input() -> Path:
@@ -25,23 +25,10 @@ def find_input() -> Path:
 
 DEFAULT_INPUT = find_input()
 
-
-def words(*values: int) -> bytes:
-    result = bytearray()
-    for value in values:
-        if not 0 <= value <= 0xFFFF:
-            raise ValueError(f"CHIP-8 word outside 16 bits: {value:#x}")
-        result.extend(value.to_bytes(2, "big"))
-    return bytes(result)
-
-
-# Each tuple is (logical address, exact original bytes, replacement bytes).
-PATCHES = (
-    # Replace 59 timer ticks plus a VIP-speed native pad with 60 timer ticks.
-    (0x0252, words(0x6D3B), words(0x6D3C)),
-    # Skip the now-unneeded CDP1802 routine and begin the next interval.
-    (0x0266, words(0x02D8), words(0x1252)),
-)
+PROGRAM_START = 0x0200
+FRAME_ADDRESS = 0x02F0
+FRAME = bytes.fromhex("FF 81 81 81 81 81 FF")
+FRAME_CALL = bytes.fromhex("A2 F0 62 08 D1 27 00 EE")
 
 
 def apply_patch(original: bytes) -> bytes:
@@ -51,15 +38,15 @@ def apply_patch(original: bytes) -> bytes:
     if len(original) != ORIGINAL_LENGTH:
         raise ValueError(f"unexpected input length: {len(original)}")
 
+    call_offset = 0x0258 - PROGRAM_START
+    actual = original[call_offset : call_offset + len(FRAME_CALL)]
+    if actual != FRAME_CALL:
+        raise ValueError(f"original bytes differ at 0258: {actual.hex()}")
+
     fixed = bytearray(original)
-    for address, expected, replacement in PATCHES:
-        offset = address - 0x0200
-        actual = bytes(fixed[offset : offset + len(expected)])
-        if actual != expected:
-            raise ValueError(f"original bytes differ at {address:04X}: {actual.hex()}")
-        if len(replacement) != len(expected):
-            raise AssertionError(f"in-place patch size changed at {address:04X}")
-        fixed[offset : offset + len(replacement)] = replacement
+    frame_offset = FRAME_ADDRESS - PROGRAM_START
+    fixed.extend(bytes(frame_offset - len(fixed)))
+    fixed.extend(FRAME)
 
     result = bytes(fixed)
     digest = hashlib.sha256(result).hexdigest()

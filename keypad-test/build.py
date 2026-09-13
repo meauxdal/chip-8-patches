@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the portable CHIP-8 fix for Bill Fisher's Clock Program."""
+"""Build the portable CHIP-8 fix for Hap's Keypad Test."""
 
 from __future__ import annotations
 
@@ -8,12 +8,12 @@ import hashlib
 from pathlib import Path
 
 
-DEFAULT_OUTPUT = Path(__file__).with_name("Clock Program (portable fix) [Bill Fisher, 1981].ch8")
+DEFAULT_OUTPUT = Path(__file__).with_name("KEYPAD TEST (portable fix) [Hap, 2006].ch8")
 
-ORIGINAL_LENGTH = 280
-ORIGINAL_SHA256 = "f6773f7385982165d693febc7e26826dead4a66cd2376f603a66fcb775ca1a34"
-FIXED_SHA256 = "bf2d6d3bdcaefa4997ac81d40790adccb58be5c264b917b8f6a3c355123d98a7"
-ORIGINAL_SHA1 = "016345d75eef34448840845a9590d41e6bfdf46a"
+ORIGINAL_LENGTH = 114
+ORIGINAL_SHA256 = "8be9c412a1c27efb72a7aa7c5f63f013b5b08af0df59febc0a909c90685caf65"
+FIXED_SHA256 = "4132032f1d3874c8b6ad7728b1e402ba1b6330db1f775a5e858ae3f9599a6a23"
+ORIGINAL_SHA1 = "0ebc4b92c6059d6193565644fb00108161d03d23"
 
 
 def find_input() -> Path:
@@ -27,20 +27,15 @@ DEFAULT_INPUT = find_input()
 
 
 def words(*values: int) -> bytes:
-    result = bytearray()
-    for value in values:
-        if not 0 <= value <= 0xFFFF:
-            raise ValueError(f"CHIP-8 word outside 16 bits: {value:#x}")
-        result.extend(value.to_bytes(2, "big"))
-    return bytes(result)
+    return b"".join(value.to_bytes(2, "big") for value in values)
 
 
 # Each tuple is (logical address, exact original bytes, replacement bytes).
 PATCHES = (
-    # Replace 59 timer ticks plus a VIP-speed native pad with 60 timer ticks.
-    (0x0252, words(0x6D3B), words(0x6D3C)),
-    # Skip the now-unneeded CDP1802 routine and begin the next interval.
-    (0x0266, words(0x02D8), words(0x1252)),
+    (0x022C, words(0x820E), words(0x822E)),
+    (0x0230, words(0x8206), words(0x8226)),
+    (0x0238, words(0x820E), words(0x822E)),
+    (0x023C, words(0x8206), words(0x8226)),
 )
 
 
@@ -57,8 +52,6 @@ def apply_patch(original: bytes) -> bytes:
         actual = bytes(fixed[offset : offset + len(expected)])
         if actual != expected:
             raise ValueError(f"original bytes differ at {address:04X}: {actual.hex()}")
-        if len(replacement) != len(expected):
-            raise AssertionError(f"in-place patch size changed at {address:04X}")
         fixed[offset : offset + len(replacement)] = replacement
 
     result = bytes(fixed)
@@ -72,7 +65,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("input", nargs="?", type=Path, default=DEFAULT_INPUT)
     parser.add_argument("-o", "--output", type=Path, default=DEFAULT_OUTPUT)
-    parser.add_argument("--check", action="store_true", help="verify an existing output instead of writing it")
+    parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
 
     original = args.input.read_bytes()

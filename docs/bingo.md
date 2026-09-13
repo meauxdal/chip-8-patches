@@ -1,7 +1,7 @@
 # Bingo portable fix
 
-The 1,536-byte source (`0200-07FF`) is accepted only with SHA-256
-`702676f43590720f95e5fc3c334a00a58478b0fca5c082f25c772f54abcaa65a`.
+The 1,536-byte source (`0200-07FF`) is identified in the CHIP-8 database by
+SHA-1 `08f70fe1c228d15a7a5f456840b5e0e56a51fd99`.
 The fixed image has SHA-256
 `d261441ae0e9241cf43cf33f6947e55ec7e9c9c038eb46ebff0668aa0433f5fb`.
 

@@ -1,7 +1,7 @@
 # Videodraw Chip 8 portable fix
 
-The accepted 256-byte payload has SHA-256
-`c3d5e465fdba6c275ab02fbef114fa4f69f9cac26edddc10d05326e195d8a9be`.
+The accepted 256-byte payload is identified in the CHIP-8 database by SHA-1
+`87939f2c59bf27d30fdc53dc53161b6c9ef8085c`.
 It is also verified as the payload following the 512-byte interpreter in the
 768-byte archival object. The fixed image has SHA-256
 `2e2f85723f85786b668f37e7989b743f4f7f75dae89e098b714c9f8ba51ba1be`.

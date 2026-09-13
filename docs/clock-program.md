@@ -1,7 +1,7 @@
 # Clock Program portable fix
 
-The 280-byte source is accepted only with SHA-256
-`f6773f7385982165d693febc7e26826dead4a66cd2376f603a66fcb775ca1a34`.
+The 280-byte source is identified in the CHIP-8 database by SHA-1
+`016345d75eef34448840845a9590d41e6bfdf46a`.
 The fixed image has SHA-256
 `bf2d6d3bdcaefa4997ac81d40790adccb58be5c264b917b8f6a3c355123d98a7`.
 

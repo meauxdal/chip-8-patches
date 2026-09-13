@@ -8,8 +8,7 @@ import hashlib
 from pathlib import Path
 
 
-DEFAULT_INPUT = Path(__file__).with_name("Tick-Tack-Toe (fix) [Joseph Weisbecker, 1977].ch8")
-DEFAULT_OUTPUT = Path(__file__).with_name("VIP Tick-Tack-Toe (portable fix).ch8")
+DEFAULT_OUTPUT = Path(__file__).with_name("Tick-Tack-Toe (portable fix) [Joseph Weisbecker, 1977].ch8")
 
 SOURCES = {
     "40474f473154e467ac9ece7e01656764cdbb16fe6884c6ecc4092ef5a7a7dec9": 470,
@@ -17,6 +16,17 @@ SOURCES = {
 }
 PROGRAM_LENGTH = 470  # Manual listing ends with the opcode at 03D4-03D5.
 FIXED_SHA256 = "b54cd3243b58499ad747f7b1e46e377d38d3f9470e1a50c74c18034dcfb3fcad"
+ORIGINAL_SHA1 = "8c404dc15f854456cafe9b22fcdbaf16830ffde5"
+
+
+def find_input() -> Path:
+    for path in Path(__file__).parent.glob("*.ch8"):
+        if hashlib.sha1(path.read_bytes()).hexdigest() == ORIGINAL_SHA1:
+            return path
+    raise FileNotFoundError(f"no input ROM with database SHA-1 {ORIGINAL_SHA1}")
+
+
+DEFAULT_INPUT = find_input()
 
 
 def words(*values: int) -> bytes:
