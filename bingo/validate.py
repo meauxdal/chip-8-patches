@@ -220,6 +220,21 @@ def run_calls(image: bytes, quirks: Quirks) -> tuple[Chip8, list[bytes]]:
     raise AssertionError("manual-call scenario did not finish")
 
 
+def run_verify(image: bytes, quirks: Quirks) -> Chip8:
+    cpu = Chip8(image, quirks)
+    cpu.pc = 0x02DE
+    cpu.v[7] = 42
+    cpu.mem[0x0454 + cpu.v[7]] = 1
+    iterations = 0
+    for _ in range(2_000):
+        if cpu.pc == 0x031E:
+            assert iterations == 3, f"Verify completed after {iterations} iterations"
+            return cpu
+        iterations += cpu.pc == 0x02F2
+        cpu.step()
+    raise AssertionError(f"Verify did not finish after {iterations} iterations")
+
+
 def reachable_opcodes(image: bytes) -> dict[int, int]:
     todo, found, end = [0x200], {}, 0x200 + len(image)
     while todo:
@@ -302,6 +317,8 @@ def main() -> None:
     cfg_count = check_cfg(fixed)
     reference_cpu, reference_calls = run_calls(original, QUIRKS[0])
     assert reference_cpu.native_entries, "reference scenario did not exercise native services"
+    reference_verify = run_verify(original, QUIRKS[0])
+    assert reference_verify.native_entries, "reference Verify scenario did not exercise native services"
 
     print(f"reproducible image: passed ({hashlib.sha256(fixed).hexdigest()})")
     print(f"static CFG: passed ({cfg_count} reachable instructions; no 0NNN/shift/Bnnn/Fx0A)")
@@ -309,8 +326,10 @@ def main() -> None:
         fixed_cpu, fixed_calls = run_calls(fixed, quirks)
         assert not fixed_cpu.native_entries
         assert fixed_calls == reference_calls
+        fixed_verify = run_verify(fixed, quirks)
+        assert not fixed_verify.native_entries
         counts = ", ".join(str(sum(value.bit_count() for value in screen)) for screen in fixed_calls)
-        print(f"{quirks.name}: passed (manual-call pixels {counts})")
+        print(f"{quirks.name}: passed (manual-call pixels {counts}; Verify completed three iterations)")
     print(f"OpenStudio2 firmware simulation: {validate_openstudio2(fixed, args.openstudio2)}")
 
 
