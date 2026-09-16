@@ -8,7 +8,7 @@ import hashlib
 from pathlib import Path
 
 
-DEFAULT_OUTPUT = Path(__file__).with_name("Tick-Tack-Toe (portable fix) [Joseph Weisbecker, 1977].ch8")
+DEFAULT_OUTPUT = Path(__file__).with_name("Tic-Tac-Toe (portable fix) [Joseph Weisbecker, 1977].ch8")
 
 SOURCES = {
     "40474f473154e467ac9ece7e01656764cdbb16fe6884c6ecc4092ef5a7a7dec9": 470,

@@ -6,6 +6,11 @@ It is also verified as the payload following the 512-byte interpreter in the
 768-byte archival object. The fixed image has SHA-256
 `2e2f85723f85786b668f37e7989b743f4f7f75dae89e098b714c9f8ba51ba1be`.
 
+The first 80 bytes (`0200-024F`) also match the independently preserved
+80-byte Video Display Drawing Game image, SHA-1
+`12fccf60004f685c112fe3db3d3bcfba104cbcb1`. The remaining 176 bytes are
+retained as part of the Hagley capture; no evidence supports a second program there.
+
 ## Patch
 
 The only reachable native call, `0206: 0236`, selects VIP framebuffer page `03`
